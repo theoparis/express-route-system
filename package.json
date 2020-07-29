@@ -1,6 +1,6 @@
 {
 	"name": "express-route-system",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "A route system for expressjs that lets you define routes using a single json file.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
