@@ -59,7 +59,7 @@ export function handleRoutes(opts: RouteOpts) {
             opts.baseDir || path.dirname(require.main.filename),
             opts.routeFile,
         );
-        console.log(`Loading routes from ${routePath}...`);
+        if (opts.debug) console.log(`Loading routes from ${routePath}...`);
         let route: Route = await import(routePath);
         if (route.children) handle([...route.children, route], opts.router);
         else handle([route], opts.router);

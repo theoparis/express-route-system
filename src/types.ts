@@ -13,6 +13,7 @@ export interface RouteOpts {
     router: IRouter;
     baseDir?: string;
     routeFile: string;
+    debug?: boolean;
 }
 
 export interface Route {
