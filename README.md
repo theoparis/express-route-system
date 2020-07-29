@@ -43,15 +43,9 @@ export default {
         {
             path: "test",
             methods: {
-                get: [
-                    async (req, res) => {
-                        console.log("testing...");
-                        next();
-                    },
-                    {
-                        data: "This is a test message."
-                    },
-                ]
+                get: {
+                    data: "This is a test message.",
+                },
             },
         },
     ],
@@ -73,3 +67,18 @@ and sent using `res.status(status).send(data)`.
 
 A method can also be an array of method handlers,
 so you can have mulitple functions for one method.
+Here's an example:
+
+```ts
+methods: {
+    get: [
+        async (req, res) => {
+            console.log("testing...");
+            next();
+        },
+        {
+            data: "This is a test message."
+        },
+    ]
+},
+```
