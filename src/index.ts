@@ -5,26 +5,39 @@ import {
     Method,
     isRenderRoute,
     isResponseRoute,
+    MultiRouteHandler,
+    isRequestHandlerArray,
 } from "./types";
 import path from "path";
-import { Request, Response, RequestHandler, IRouter, Router } from "express";
+import {
+    Request,
+    Response,
+    RequestHandler,
+    IRouter,
+    Router,
+    IRouterMatcher,
+} from "express";
 
-export const getHandler = (handler: RouteHandler): RequestHandler => {
-    let result: any = handler;
+export const getHandler = (handler: RouteHandler): Array<RequestHandler> => {
     if (isRenderRoute(handler))
-        result = async (_: Request, res: Response) =>
-            res.render(handler.view, handler.options);
+        return [
+            async (_: Request, res: Response) =>
+                res.render(handler.view, handler.options),
+        ];
     else if (isResponseRoute(handler))
-        result = async (_: Request, res: Response) =>
-            res
-                .status(handler.status || 200)
-                .send(
-                    typeof handler.data === "string"
-                        ? handler.data
-                        : JSON.stringify(handler.data),
-                );
-
-    return result;
+        return [
+            async (_: Request, res: Response) =>
+                res
+                    .status(handler.status || 200)
+                    .send(
+                        typeof handler.data === "string"
+                            ? handler.data
+                            : JSON.stringify(handler.data),
+                    ),
+        ];
+    else if (isRequestHandlerArray(handler))
+        return handler as Array<RequestHandler>;
+    else return getHandler(handler);
 };
 
 /**
@@ -37,7 +50,7 @@ function handle(routes: Route[], rootRouter: IRouter) {
         // If the path does not contain a / in the beginning, add it.
         if (apiPath && !apiPath.startsWith("/")) apiPath = "/" + apiPath;
 
-        let handlers = routeObject.handlers;
+        let handlers = routeObject.methods;
         if (handlers) {
             let methods = Object.keys(handlers) as Method[];
             // assign handlers for each method
@@ -64,10 +77,12 @@ export function handleRoutes(opts: RouteOpts) {
         opts.routeFile,
     );
     if (opts.debug) console.log(`Loading routes from ${routePath}...`);
-    import(routePath).then(imported => imported.default).then((route: Route) => {
-        if (route.children) handle([...route.children, route], opts.router);
-        else handle([route], opts.router);
-    });
+    import(routePath)
+        .then((imported) => imported.default)
+        .then((route: Route) => {
+            if (route.children) handle([...route.children, route], opts.router);
+            else handle([route], opts.router);
+        });
 }
 
 export default handleRoutes;

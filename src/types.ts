@@ -1,7 +1,4 @@
-import {
-    RequestHandler,
-    IRouter,
-} from "express";
+import { RequestHandler, IRouter } from "express";
 /**
  * If baseDir is specified,
  * you can use path.dirname(require.main.filename) or __dirname to get your app's root folder.
@@ -15,11 +12,19 @@ export interface RouteOpts {
 
 export interface Route {
     path: string;
-    handlers: Record<Method, RouteHandler>;
+    methods: Record<Method, RouteHandler>;
     children: Route[];
 }
 
-export type RouteHandler = RequestHandler<any> | RenderRoute | ResponseRoute;
+export type RouteHandler =
+    | MultiRouteHandler
+    | RenderRoute
+    | ResponseRoute
+    | RequestHandler;
+export type MultiRouteHandler = Array<RouteHandler>;
+
+export const isRequestHandlerArray = (obj: any): boolean =>
+    Array.isArray(obj) && obj.every((h) => typeof h === "function");
 
 export const isRenderRoute = (x: any): x is RenderRoute => "view" in x;
 
