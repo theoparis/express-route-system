@@ -38,33 +38,36 @@ function handle(routes: Route[], rootRouter: IRouter) {
         if (apiPath && !apiPath.startsWith("/")) apiPath = "/" + apiPath;
 
         let handlers = routeObject.handlers;
-        let methods = Object.keys(handlers) as Method[];
+        if (handlers) {
+            let methods = Object.keys(handlers) as Method[];
+            // assign handlers for each method
+            methods.forEach((method) => {
+                rootRouter[method](
+                    apiPath || "/",
+                    getHandler(handlers[method]),
+                );
+            });
+        }
 
         if (routeObject.children && routeObject.children.length > 0) {
             const router = Router();
             handle(routeObject.children, router);
             rootRouter.use(apiPath || "/", router);
         }
-        // assign handlers for each method
-        methods.forEach((method) => {
-            rootRouter[method](apiPath || "/", getHandler(handlers[method]));
-        });
     });
 }
 
 export function handleRoutes(opts: RouteOpts) {
     // load the current route object
-    const fun = async () => {
-        const routePath = path.join(
-            opts.baseDir || path.dirname(require.main.filename),
-            opts.routeFile,
-        );
-        if (opts.debug) console.log(`Loading routes from ${routePath}...`);
-        let route: Route = await import(routePath);
+    const routePath = path.join(
+        opts.baseDir || path.dirname(require.main.filename),
+        opts.routeFile,
+    );
+    if (opts.debug) console.log(`Loading routes from ${routePath}...`);
+    import(routePath).then(imported => imported.default).then((route: Route) => {
         if (route.children) handle([...route.children, route], opts.router);
         else handle([route], opts.router);
-    };
-    fun();
+    });
 }
 
 export default handleRoutes;
