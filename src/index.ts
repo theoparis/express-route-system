@@ -35,9 +35,11 @@ export const getHandler = (handler: RouteHandler): Array<RequestHandler> => {
                             : JSON.stringify(handler.data),
                     ),
         ];
-    else if (isRequestHandlerArray(handler))
-        return handler as Array<RequestHandler>;
-    else return getHandler(handler);
+    else if (Array.isArray(handler))
+        return (handler as Array<RouteHandler>).flatMap((h) => {
+            return getHandler(h);
+        });
+    else return [handler];
 };
 
 /**

@@ -30,33 +30,39 @@ Here you can see we are initializing the routes with your express app as the rou
 
 Now you can create a routes file which
 can be either `.json`, `.ts` or `.js`.
-Below is an basic example of a routes file:
+Below is an basic example of a routes file written in typescript:
 
-```json
-{
-    "handlers": {
-        "get": {
-            "data": "Hello, world!"
-        }
+```ts
+export default {
+    methods: {
+        get: {
+            data: "Hello, world!",
+        },
     },
-    "children": [
+    children: [
         {
-            "path": "test",
-            "handlers": {
-                "get": {
-                    "data": "This is a test message."
-                }
-            }
-        }
-    ]
-}
+            path: "test",
+            methods: {
+                get: [
+                    async (req, res) => {
+                        console.log("testing...");
+                        next();
+                    },
+                    {
+                        data: "This is a test message."
+                    },
+                ]
+            },
+        },
+    ],
+};
 ```
 
 Here, the root object has a path of `/` if not specified.
 You do not have to include slashes in the beginning
 of the path property unless you want to.
 
-Each "handler" can be either a json object
+Each "method" can be either a json object
 with a data and a status property,
 a custom function (only useable in `.ts` or `.js` files),
 or a json object containing a `view` and a `options` property.
@@ -64,3 +70,6 @@ If the object has a view property, express will call `res.render(view, options)`
 
 If it has a data property, it will be considered as a normal response object
 and sent using `res.status(status).send(data)`.
+
+A method can also be an array of method handlers,
+so you can have mulitple functions for one method.
