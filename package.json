@@ -1,0 +1,21 @@
+{
+    "name": "express-route-system",
+    "version": "1.0.0",
+    "description": "A route system for expressjs that lets you define routes using a single json file.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "prepublishOnly": "pnpm run build",
+        "build": "tsc"
+    },
+    "author": "Theo Paris",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^3.9.7"
+    },
+    "dependencies": {
+        "@types/express": "^4.17.7",
+        "@types/node": "^14.0.27",
+        "express": "^4.17.1"
+    }
+}
