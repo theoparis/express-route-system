@@ -1,7 +1,4 @@
 import {
-    Request,
-    Response,
-    NextFunction,
     RequestHandler,
     IRouter,
 } from "express";
