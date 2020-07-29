@@ -3,7 +3,10 @@
 	"version": "1.0.0",
 	"description": "A route system for expressjs that lets you define routes using a single json file.",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
 	"scripts": {
 		"prepublishOnly": "pnpm run build",
 		"build": "tsc"
