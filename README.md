@@ -1,5 +1,7 @@
 # Express Route System
 
+[![npm version](https://badge.fury.io/js/express-route-system.svg)](https://badge.fury.io/js/express-route-system)
+![npm bundle size](https://img.shields.io/bundlephobia/min/express-route-system)  
 A route system for expressjs that lets you define routes using a single json file. You can also use typescript or javascript files for the route file.
 
 ## Installation
