@@ -42,6 +42,7 @@ export type ResponseRoute = {
 };
 
 export type Method =
+    | "all"
     | "get"
     | "post"
     | "put"

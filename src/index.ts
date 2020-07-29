@@ -81,9 +81,8 @@ export function handleRoutes(opts: RouteOpts) {
     if (opts.debug) console.log(`Loading routes from ${routePath}...`);
     import(routePath)
         .then((imported) => imported.default)
-        .then((route: Route) => {
-            if (route.children) handle([...route.children, route], opts.router);
-            else handle([route], opts.router);
+        .then((routes: Route[]) => {
+            handle(routes, opts.router);
         });
 }
 
