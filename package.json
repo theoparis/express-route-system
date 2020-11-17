@@ -7,6 +7,9 @@
     "files": [
         "dist"
     ],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "prepublishOnly": "pnpm run lint && pnpm run build",
         "lint": "eslint --quiet --fix src/**/*",
