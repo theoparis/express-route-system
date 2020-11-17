@@ -10,35 +10,32 @@ export interface RouteOpts {
     debug?: boolean;
 }
 
-export interface Route {
-    path: string;
-    methods: Record<Method, RouteHandler>;
-    children: Route[];
+export interface Controller {
+    path?: string;
+    methods: Partial<Record<Method, MultiRouteHandler>>;
+    children?: (Controller | string)[];
 }
 
-export type RouteHandler =
-    | MultiRouteHandler
-    | RenderRoute
-    | ResponseRoute
-    | RequestHandler;
-export type MultiRouteHandler = Array<RouteHandler>;
+export type RouteHandler = RenderRoute | ResponseRoute | RequestHandler;
+export type MultiRouteHandler = Partial<RouteHandler>[];
 
-export const isRequestHandlerArray = (obj: any): boolean =>
+export const isRequestHandlerArray = (obj: unknown): boolean =>
     Array.isArray(obj) && obj.every((h) => typeof h === "function");
 
-export const isRenderRoute = (x: any): x is RenderRoute => "view" in x;
+export const isRenderRoute = (x: unknown): x is RenderRoute =>
+    (x as RenderRoute).view !== undefined;
 
-export type RenderRoute = {
+export type RenderRoute<O = Record<string, unknown>> = {
     view: string;
-    options: object;
+    options: O;
 };
 
-export const isResponseRoute = (x: any): x is ResponseRoute =>
+export const isResponseRoute = (x: unknown): x is ResponseRoute =>
     (x as ResponseRoute).data !== undefined;
 
 export type ResponseRoute = {
     status: number;
-    data: string | object;
+    data: string | Record<string, unknown>;
 };
 
 export type Method =
@@ -50,3 +47,5 @@ export type Method =
     | "patch"
     | "options"
     | "head";
+
+export type ControllersOrPath = (Controller | string)[];
